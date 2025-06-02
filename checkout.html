@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Toko Serba Ada</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Noto+Sans:wght@400;500;700;900&family=Plus+Jakarta+Sans:wght@400;500;700;800">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 font-['Plus_Jakarta_Sans']">
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="index.html" class="text-2xl font-bold text-blue-600">Toko<span class="text-gray-800">SerbaAda</span></a>
+            
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 text-sm">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-medium">✓</div>
+                        <span class="ml-2 text-green-600 font-medium">Keranjang</span>
+                    </div>
+                    <div class="w-8 border-t border-gray-300"></div>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-medium">2</div>
+                        <span class="ml-2 text-blue-600 font-medium">Checkout</span>
+                    </div>
+                    <div class="w-8 border-t border-gray-300"></div>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs font-medium">3</div>
+                        <span class="ml-2 text-gray-600">Pembayaran</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex items-center mb-6">
+            <a href="cart.html" class="text-blue-600 hover:text-blue-800 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Kembali ke Keranjang
+            </a>
+        </div>
+
+        <!-- Empty Cart Message -->
+        <div id="emptyCheckoutMessage" class="hidden text-center py-12">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Keranjang Belanja Kosong</h3>
+            <p class="text-gray-500 mb-6">Tidak ada produk untuk di-checkout</p>
+            <a href="products.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                Mulai Belanja
+            </a>
+        </div>
+
+        <!-- Checkout Content -->
+        <div id="checkoutContent">
+            <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Checkout Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Shipping Information -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-6">Informasi Pengiriman</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Depan</label>
+                                <input type="text" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Masukkan nama depan">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Belakang</label>
+                                <input type="text" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Masukkan nama belakang">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="contoh@email.com">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                                <input type="tel" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="+62 812-3456-7890">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap</label>
+                                <textarea rows="3" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="Jl. Contoh No. 123, RT/RW 01/02"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kota</label>
+                                <select class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                    <option>Pilih Kota</option>
+                                    <option>Jakarta</option>
+                                    <option>Bandung</option>
+                                    <option>Surabaya</option>
+                                    <option>Medan</option>
+                                    <option>Semarang</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos</label>
+                                <input type="text" class="w-full rounded-lg border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" placeholder="12345">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Method -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-6">Metode Pengiriman</h2>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="shipping" value="regular" class="text-blue-600 focus:ring-blue-500" checked>
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <div class="font-medium">Reguler (3-5 hari kerja)</div>
+                                            <div class="text-sm text-gray-500">Pengiriman standar</div>
+                                        </div>
+                                        <div class="font-bold text-blue-600">Rp 25.000</div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="shipping" value="express" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <div class="font-medium">Express (1-2 hari kerja)</div>
+                                            <div class="text-sm text-gray-500">Pengiriman cepat</div>
+                                        </div>
+                                        <div class="font-bold text-blue-600">Rp 50.000</div>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="shipping" value="same-day" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <div class="font-medium">Same Day (Hari ini)</div>
+                                            <div class="text-sm text-gray-500">Khusus Jakarta & sekitarnya</div>
+                                        </div>
+                                        <div class="font-bold text-blue-600">Rp 75.000</div>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold mb-6">Metode Pembayaran</h2>
+                        
+                        <div class="space-y-4">
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="payment" value="credit-card" class="text-blue-600 focus:ring-blue-500" checked>
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                        <span class="font-medium">Kartu Kredit/Debit</span>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="payment" value="bank-transfer" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                                        </svg>
+                                        <span class="font-medium">Transfer Bank</span>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="payment" value="e-wallet" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        <span class="font-medium">E-Wallet (OVO, GoPay, DANA)</span>
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <label class="flex items-center p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                                <input type="radio" name="payment" value="cod" class="text-blue-600 focus:ring-blue-500">
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                        <span class="font-medium">Bayar di Tempat (COD)</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+                        <h2 class="text-xl font-semibold mb-6">Ringkasan Pesanan</h2>
+                        
+                        <!-- Order Items -->
+                        <div class="space-y-4 mb-6" id="checkoutItems">
+                            <!-- Items will be loaded here by JavaScript -->
+                        </div>
+                        
+                        <hr class="border-gray-200 mb-4">
+                        
+                        <!-- Price Breakdown -->
+                        <div class="space-y-3 mb-6">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Subtotal</span>
+                                <span class="font-medium" id="checkoutSubtotal">Rp 0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Diskon</span>
+                                <span class="font-medium text-green-600" id="checkoutDiscount">-Rp 0</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Ongkos Kirim</span>
+                                <span class="font-medium" id="checkoutShipping">Rp 25.000</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Pajak</span>
+                                <span class="font-medium" id="checkoutTax">Rp 0</span>
+                            </div>
+                            <hr class="border-gray-200">
+                            <div class="flex justify-between text-lg font-bold">
+                                <span>Total</span>
+                                <span class="text-blue-600" id="checkoutTotal">Rp 0</span>
+                            </div>
+                        </div>
+
+                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors mb-3" onclick="processOrder()">
+                            Buat Pesanan
+                        </button>
+                        
+                        <div class="text-center">
+                            <div class="flex items-center justify-center text-sm text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                Pembayaran Aman & Terpercaya
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Process order function
+        function processOrder() {
+            // Validate form
+            const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-red-500');
+                } else {
+                    field.classList.remove('border-red-500');
+                }
+            });
+            
+            if (!isValid) {
+                alert('Mohon lengkapi semua field yang diperlukan');
+                return;
+            }
+            
+            // Simulate order processing
+            const orderButton = document.querySelector('button[onclick="processOrder()"]');
+            orderButton.disabled = true;
+            orderButton.textContent = 'Memproses...';
+            
+            setTimeout(() => {
+                alert('Pesanan berhasil dibuat! Anda akan diarahkan ke halaman pembayaran.');
+                
+                // Clear cart
+                localStorage.removeItem('cart');
+                
+                // Redirect to success page or home
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+        
+        // Update shipping cost when method changes
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'shipping') {
+                updateShippingCost(e.target.value);
+            }
+        });
+        
+        function updateShippingCost(method) {
+            const shippingCosts = {
+                'regular': 25000,
+                'express': 50000,
+                'same-day': 75000
+            };
+            
+            const cost = shippingCosts[method] || 25000;
+            document.getElementById('checkoutShipping').textContent = `Rp ${formatPrice(cost)}`;
+            
+            // Recalculate total
+            calculateCheckoutTotal();
+        }
+        
+        function calculateCheckoutTotal() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const discount = Math.floor(subtotal * 0.1);
+            const shippingText = document.getElementById('checkoutShipping').textContent;
+            const shipping = parseInt(shippingText.replace(/[^\d]/g, '')) || 25000;
+            const tax = Math.floor((subtotal - discount) * 0.1);
+            const total = subtotal - discount + shipping + tax;
+            
+            document.getElementById('checkoutTotal').textContent = `Rp ${formatPrice(total)}`;
+            document.getElementById('checkoutTax').textContent = `Rp ${formatPrice(tax)}`;
+        }
+        
+        function formatPrice(price) {
+            return new Intl.NumberFormat('id-ID').format(price);
+        }
+    </script>
+
+    
+    <script src="js/app.js"></script>
+</body>
+</html>
