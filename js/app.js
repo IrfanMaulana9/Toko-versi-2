@@ -1,157 +1,17 @@
 // Global variables
 let cart = JSON.parse(localStorage.getItem("cart")) || []
-const products = [
-  {
-    id: 1,
-    name: "Smartphone XYZ Pro Max",
-    price: 9600000,
-    originalPrice: 12000000,
-    image: "/images/phone1.jpg",
-    rating: 5,
-    reviews: 120,
-    category: "elektronik",
-    discount: 20,
-    stock: 25,
-    description: "Smartphone flagship dengan kamera 108MP dan layar AMOLED 6.7 inch",
-    features: ["Kamera 108MP", "Layar AMOLED 120Hz", "Baterai 5000mAh", "Snapdragon 8 Gen 2"],
-  },
-  {
-    id: 2,
-    name: "Laptop ABC Ultra Slim",
-    price: 15500000,
-    originalPrice: null,
-    image: "/images/laptop1.jpg",
-    rating: 4,
-    reviews: 85,
-    category: "elektronik",
-    discount: 0,
-    stock: 15,
-    description: "Laptop ringan dengan performa tinggi untuk profesional",
-    features: ["Intel i7", "16GB RAM", "512GB SSD", "14 inch Display"],
-  },
-  {
-    id: 3,
-    name: "Headphone DEF Noise Cancelling",
-    price: 2800000,
-    originalPrice: null,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 5,
-    reviews: 210,
-    category: "elektronik",
-    discount: 0,
-    stock: 30,
-    description: "Headphone premium dengan teknologi noise cancelling",
-    features: ["Active Noise Cancelling", "30h Battery", "Hi-Res Audio", "Comfortable Design"],
-  },
-  {
-    id: 4,
-    name: "Smartwatch GHI Series 5",
-    price: 2975000,
-    originalPrice: 3500000,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4,
-    reviews: 95,
-    category: "elektronik",
-    discount: 15,
-    stock: 20,
-    description: "Smartwatch dengan monitoring kesehatan lengkap",
-    features: ["Heart Rate Monitor", "GPS", "Water Resistant", "7 Days Battery"],
-  },
-  {
-    id: 5,
-    name: "Kaos Hitam Premium",
-    price: 150000,
-    originalPrice: 180000,
-    image: "images/baju2.jpg",
-    rating: 4,
-    reviews: 150,
-    category: "fashion",
-    discount: 15,
-    stock: 150,
-    description: "Kaos polo berkualitas tinggi dengan bahan cotton premium",
-    features: ["100% Cotton", "Anti-Shrink", "Breathable", "Various Colors"],
-  },
-  {
-    id: 6,
-    name: "Sepatu Running XYZ",
-    price: 1200000,
-    originalPrice: null,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 5,
-    reviews: 89,
-    category: "olahraga",
-    discount: 0,
-    stock: 25,
-    description: "Sepatu running dengan teknologi cushioning terdepan",
-    features: ["Air Cushion", "Breathable Mesh", "Lightweight", "Anti-Slip Sole"],
-  },
-  {
-    id: 7,
-    name: "Vitamin C 1000mg",
-    price: 150000,
-    originalPrice: 200000,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 5,
-    reviews: 320,
-    category: "kesehatan",
-    discount: 25,
-    stock: 100,
-    description: "Suplemen vitamin C untuk menjaga daya tahan tubuh",
-    features: ["1000mg per tablet", "60 tablets", "Non-GMO", "Lab Tested"],
-  },
-  {
-    id: 8,
-    name: "Rice Cooker Premium 2L",
-    price: 899000,
-    originalPrice: 1200000,
-    image: "/placeholder.svg?height=300&width=300",
-    rating: 4,
-    reviews: 67,
-    category: "rumah",
-    discount: 25,
-    stock: 35,
-    description: "Rice cooker dengan teknologi fuzzy logic untuk hasil nasi sempurna",
-    features: ["Fuzzy Logic", "Non-Stick Inner Pot", "Keep Warm Function", "Easy Clean"],
-  },
-  {
-    id: 9,
-    name: "Package Shirt",
-    price: 80000,
-    originalPrice: 110000,
-    image: "images/baju1.jpg",
-    rating: 4,
-    reviews: 80,
-    category: "fashion",
-    discount: 25,
-    stock: 35,
-    description: "Kaos yang berbahan premium menggunakan cotton",
-    features: ["100% Cotton", "Anti-Shrink", "Breathable", "Various Colors"],
-  },
-  {
-    id: 10,
-    name: "Stripe Shirt",
-    price: 120000,
-    originalPrice: 140000,
-    image: "images/baju3.jpg",
-    rating: 3,
-    reviews: 45,
-    category: "fashion",
-    discount: 10,
-    stock: 24,
-    description: "Kaos garis-garis yang berbahan premium menggunakan cotton",
-    features: ["100% Cotton", "Anti-Shrink", "Breathable", "Various Colors"],
-  },
-]
 
+// Get products from productManager (defined in data.js)
+let products = []
 
 // DOM Content Loaded
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded, initializing...")
 
-  // Clear any existing cart data to ensure fresh start
-  // Uncomment the line below if you want to completely reset cart on every page load
-  // localStorage.removeItem("cart")
-  // cart = []
+  // Initialize products from productManager
+  if (window.productManager) {
+    products = window.productManager.getAllProducts()
+  }
 
   updateCartCount()
   loadFeaturedProducts()
@@ -185,7 +45,653 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.location.pathname.includes("profile.html")) {
     setupProfilePage()
   }
+
+  // Check if we're on owner dashboard
+  if (window.location.pathname.includes("dashboard-owner.html")) {
+    setupOwnerDashboard()
+  }
 })
+
+// Setup Owner Dashboard
+function setupOwnerDashboard() {
+  console.log("Setting up owner dashboard...")
+
+  // Check if user is logged in as owner
+  const userSession = localStorage.getItem("userSession")
+  if (!userSession) {
+    window.location.href = "login.html"
+    return
+  }
+
+  const userData = JSON.parse(userSession)
+  if (userData.userType !== "owner") {
+    window.location.href = "index.html"
+    return
+  }
+
+  loadDashboardStats()
+  loadProductsList()
+  setupAddProductForm()
+  setupProductActions()
+}
+
+// Load dashboard statistics
+function loadDashboardStats() {
+  const totalProducts = products.length
+  const totalStock = products.reduce((sum, product) => sum + product.stock, 0)
+  const lowStockProducts = products.filter((p) => p.stock <= 10).length
+  const totalValue = products.reduce((sum, product) => sum + product.price * product.stock, 0)
+
+  // Update stats in dashboard
+  document.getElementById("totalProducts").textContent = totalProducts
+  document.getElementById("totalStock").textContent = totalStock
+  document.getElementById("lowStockCount").textContent = lowStockProducts
+  document.getElementById("totalValue").textContent = `Rp ${formatPrice(totalValue)}`
+}
+
+// Load products list for management
+function loadProductsList() {
+  const productsTableBody = document.getElementById("productsTableBody")
+  if (!productsTableBody) return
+
+  productsTableBody.innerHTML = products
+    .map(
+      (product) => `
+    <tr class="hover:bg-gray-50">
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="flex items-center">
+          <img class="h-10 w-10 rounded-lg object-cover" src="${product.image}" alt="${product.name}">
+          <div class="ml-4">
+            <div class="text-sm font-medium text-gray-900">${product.name}</div>
+            <div class="text-sm text-gray-500">SKU: ${product.category.toUpperCase()}-${String(product.id).padStart(3, "0")}</div>
+          </div>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+          ${product.category}
+        </span>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        Rp ${formatPrice(product.price)}
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        <span class="${product.stock <= 10 ? "text-red-600 font-semibold" : "text-gray-900"}">${product.stock}</span>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        <div class="flex items-center">
+          <div class="flex text-yellow-400">
+            ${generateStars(product.rating)}
+          </div>
+          <span class="ml-1 text-gray-500">(${product.reviews})</span>
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <button onclick="editProduct(${product.id})" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+        <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">Hapus</button>
+      </td>
+    </tr>
+  `,
+    )
+    .join("")
+}
+
+// Setup add product form
+function setupAddProductForm() {
+  const addProductForm = document.getElementById("addProductForm")
+  if (!addProductForm) return
+
+  addProductForm.addEventListener("submit", (e) => {
+    e.preventDefault()
+
+    const formData = new FormData(e.target)
+    const features = formData
+      .get("features")
+      .split("\n")
+      .filter((f) => f.trim())
+
+    // Parse specifications
+    const specifications = {}
+    const specLines = formData
+      .get("specifications")
+      .split("\n")
+      .filter((s) => s.trim())
+    specLines.forEach((line) => {
+      const [key, value] = line.split(":").map((s) => s.trim())
+      if (key && value) {
+        specifications[key] = value
+      }
+    })
+
+    const productData = {
+      name: formData.get("name"),
+      price: Number.parseInt(formData.get("price")),
+      originalPrice: formData.get("originalPrice") ? Number.parseInt(formData.get("originalPrice")) : null,
+      category: formData.get("category"),
+      stock: Number.parseInt(formData.get("stock")),
+      description: formData.get("description"),
+      features: features,
+      specifications: specifications,
+      image: formData.get("image") || "/placeholder.svg?height=500&width=500",
+      discount: 0,
+    }
+
+    // Calculate discount if original price exists
+    if (productData.originalPrice && productData.originalPrice > productData.price) {
+      productData.discount = Math.round(
+        ((productData.originalPrice - productData.price) / productData.originalPrice) * 100,
+      )
+    }
+
+    // Add product using productManager
+    const newProduct = window.productManager.addProduct(productData)
+
+    // Update local products array
+    products = window.productManager.getAllProducts()
+
+    // Refresh dashboard
+    loadDashboardStats()
+    loadProductsList()
+
+    // Reset form
+    e.target.reset()
+
+    // Close modal
+    document.getElementById("addProductModal").classList.add("hidden")
+
+    showNotification(`Produk "${newProduct.name}" berhasil ditambahkan!`)
+  })
+}
+
+// Setup product actions (edit, delete)
+function setupProductActions() {
+  // These functions will be called from the table buttons
+  window.editProduct = (productId) => {
+    const product = window.productManager.getProductById(productId)
+    if (!product) return
+
+    // Fill edit form with product data
+    document.getElementById("editProductId").value = product.id
+    document.getElementById("editName").value = product.name
+    document.getElementById("editPrice").value = product.price
+    document.getElementById("editOriginalPrice").value = product.originalPrice || ""
+    document.getElementById("editCategory").value = product.category
+    document.getElementById("editStock").value = product.stock
+    document.getElementById("editDescription").value = product.description
+    document.getElementById("editFeatures").value = product.features.join("\n")
+    document.getElementById("editImage").value = product.image
+
+    // Format specifications
+    const specsText = Object.entries(product.specifications)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join("\n")
+    document.getElementById("editSpecifications").value = specsText
+
+    // Show edit modal
+    document.getElementById("editProductModal").classList.remove("hidden")
+  }
+
+  window.deleteProduct = (productId) => {
+    const product = window.productManager.getProductById(productId)
+    if (!product) return
+
+    if (confirm(`Apakah Anda yakin ingin menghapus produk "${product.name}"?`)) {
+      window.productManager.deleteProduct(productId)
+      products = window.productManager.getAllProducts()
+
+      loadDashboardStats()
+      loadProductsList()
+
+      showNotification(`Produk "${product.name}" berhasil dihapus!`)
+    }
+  }
+
+  // Setup edit product form
+  const editProductForm = document.getElementById("editProductForm")
+  if (editProductForm) {
+    editProductForm.addEventListener("submit", (e) => {
+      e.preventDefault()
+
+      const formData = new FormData(e.target)
+      const productId = Number.parseInt(formData.get("productId"))
+      const features = formData
+        .get("features")
+        .split("\n")
+        .filter((f) => f.trim())
+
+      // Parse specifications
+      const specifications = {}
+      const specLines = formData
+        .get("specifications")
+        .split("\n")
+        .filter((s) => s.trim())
+      specLines.forEach((line) => {
+        const [key, value] = line.split(":").map((s) => s.trim())
+        if (key && value) {
+          specifications[key] = value
+        }
+      })
+
+      const productData = {
+        name: formData.get("name"),
+        price: Number.parseInt(formData.get("price")),
+        originalPrice: formData.get("originalPrice") ? Number.parseInt(formData.get("originalPrice")) : null,
+        category: formData.get("category"),
+        stock: Number.parseInt(formData.get("stock")),
+        description: formData.get("description"),
+        features: features,
+        specifications: specifications,
+        image: formData.get("image") || "/placeholder.svg?height=500&width=500",
+        discount: 0,
+      }
+
+      // Calculate discount if original price exists
+      if (productData.originalPrice && productData.originalPrice > productData.price) {
+        productData.discount = Math.round(
+          ((productData.originalPrice - productData.price) / productData.originalPrice) * 100,
+        )
+      }
+
+      // Update product
+      const updatedProduct = window.productManager.updateProduct(productId, productData)
+      products = window.productManager.getAllProducts()
+
+      // Refresh dashboard
+      loadDashboardStats()
+      loadProductsList()
+
+      // Close modal
+      document.getElementById("editProductModal").classList.add("hidden")
+
+      showNotification(`Produk "${updatedProduct.name}" berhasil diperbarui!`)
+    })
+  }
+}
+
+// Setup Product Detail Page
+let currentProduct
+
+function setupProductDetailPage() {
+  const urlParams = new URLSearchParams(window.location.search)
+  const productId = Number.parseInt(urlParams.get("id"))
+
+  console.log("Product ID from URL:", productId)
+
+  if (productId) {
+    loadProductDetail(productId)
+  } else {
+    console.error("No product ID found in URL")
+    window.location.href = "products.html"
+  }
+}
+
+function loadProductDetail(productId) {
+  const product = products.find((p) => p.id === productId)
+
+  if (!product) {
+    console.error("Product not found with ID:", productId)
+    window.location.href = "products.html"
+    return
+  }
+
+  console.log("Loading product:", product)
+
+  // Store current product globally
+  currentProduct = product
+
+  // Update page metadata
+  document.title = `${product.name} - Toko Serba Ada`
+
+  // Update breadcrumb
+  updateBreadcrumb(product)
+
+  // Update product images
+  updateProductImages(product)
+
+  // Update product info
+  updateProductInfo(product)
+
+  // Update tabs content
+  updateProductTabs(product)
+
+  // Setup add to cart button
+  setupAddToCartButton(product)
+
+  // Load related products
+  loadRelatedProducts(product)
+}
+
+function updateBreadcrumb(product) {
+  const breadcrumbElement = document.getElementById("breadcrumbProductName")
+  if (breadcrumbElement) {
+    breadcrumbElement.textContent = product.name
+  }
+}
+
+function updateProductImages(product) {
+  // Main image
+  const mainImage = document.getElementById("mainImage")
+  if (mainImage) {
+    mainImage.src = product.image
+    mainImage.alt = product.name
+  }
+
+  // Thumbnails - use same image for all thumbnails (in real app, you'd have multiple images)
+  const thumbnails = document.querySelectorAll(".thumbnail")
+  thumbnails.forEach((thumb) => {
+    thumb.src = product.image
+    thumb.alt = product.name
+  })
+
+  // Discount badge
+  const discountBadge = document.getElementById("discountBadge")
+  if (discountBadge) {
+    if (product.discount > 0) {
+      discountBadge.textContent = `-${product.discount}%`
+      discountBadge.classList.remove("hidden")
+    } else {
+      discountBadge.classList.add("hidden")
+    }
+  }
+}
+
+function updateProductInfo(product) {
+  // Product name
+  const productName = document.getElementById("productName")
+  if (productName) productName.textContent = product.name
+
+  // Product SKU
+  const productSku = document.getElementById("productSku")
+  if (productSku)
+    productSku.textContent = `SKU: ${product.category.toUpperCase()}-${String(product.id).padStart(3, "0")}`
+
+  // Rating
+  const ratingStars = document.getElementById("ratingStars")
+  if (ratingStars) {
+    ratingStars.innerHTML = generateStars(product.rating)
+  }
+
+  const reviewsCount = document.getElementById("reviewsCount")
+  if (reviewsCount) {
+    reviewsCount.textContent = `(${product.reviews} ulasan)`
+  }
+
+  // Price
+  const currentPrice = document.getElementById("currentPrice")
+  const originalPrice = document.getElementById("originalPrice")
+  const discountPercentage = document.getElementById("discountPercentage")
+
+  if (currentPrice) {
+    currentPrice.textContent = `Rp ${formatPrice(product.price)}`
+  }
+
+  if (originalPrice) {
+    if (product.originalPrice) {
+      originalPrice.textContent = `Rp ${formatPrice(product.originalPrice)}`
+      originalPrice.classList.remove("hidden")
+    } else {
+      originalPrice.classList.add("hidden")
+    }
+  }
+
+  if (discountPercentage) {
+    if (product.discount > 0) {
+      discountPercentage.textContent = `Hemat ${product.discount}%`
+      discountPercentage.classList.remove("hidden")
+    } else {
+      discountPercentage.classList.add("hidden")
+    }
+  }
+
+  // Stock
+  const stockStatus = document.getElementById("stockStatus")
+  const stockInfo = document.getElementById("stockInfo")
+
+  if (stockStatus) {
+    if (product.stock > 0) {
+      stockStatus.textContent = "✓ Stok tersedia"
+      stockStatus.className = "text-green-600 font-medium"
+    } else {
+      stockStatus.textContent = "✗ Stok habis"
+      stockStatus.className = "text-red-600 font-medium"
+    }
+  }
+
+  if (stockInfo) {
+    stockInfo.textContent = `Stok: ${product.stock} unit`
+  }
+
+  // Features
+  const featuresContainer = document.getElementById("productFeatures")
+  if (featuresContainer && product.features) {
+    featuresContainer.innerHTML = product.features
+      .map(
+        (feature) =>
+          `<li class="flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        ${feature}
+      </li>`,
+      )
+      .join("")
+  }
+
+  // Show/hide product options based on category
+  if (product.category === "elektronik") {
+    const colorOptions = document.getElementById("colorOptions")
+    const storageOptions = document.getElementById("storageOptions")
+    if (colorOptions) colorOptions.classList.remove("hidden")
+    if (storageOptions) storageOptions.classList.remove("hidden")
+  }
+}
+
+function updateProductTabs(product) {
+  // Description tab
+  const descriptionContainer = document.getElementById("productDescription")
+  if (descriptionContainer) {
+    descriptionContainer.innerHTML = `
+      <p class="mb-4">${product.description}</p>
+      <h4 class="font-semibold mb-2">Fitur Utama:</h4>
+      <ul class="list-disc pl-5 space-y-1">
+        ${product.features.map((feat) => `<li>${feat}</li>`).join("")}
+      </ul>
+    `
+  }
+
+  // Specifications tab
+  const specsContainer = document.getElementById("productSpecifications")
+  if (specsContainer && product.specifications) {
+    specsContainer.innerHTML = `
+      <div>
+        <h4 class="font-semibold mb-3">Spesifikasi Produk</h4>
+        <dl class="space-y-2">
+          ${Object.entries(product.specifications)
+            .map(
+              ([key, value]) => `
+            <div class="flex justify-between py-2 border-b border-gray-100">
+              <dt class="text-gray-600 font-medium">${key}</dt>
+              <dd class="text-gray-900">${value}</dd>
+            </div>
+          `,
+            )
+            .join("")}
+        </dl>
+      </div>
+    `
+  }
+
+  // Reviews tab
+  const reviewsTabCount = document.getElementById("reviewsTabCount")
+  const totalReviews = document.getElementById("totalReviews")
+  const averageRating = document.getElementById("averageRating")
+  const averageRatingStars = document.getElementById("averageRatingStars")
+
+  if (reviewsTabCount) reviewsTabCount.textContent = product.reviews
+  if (totalReviews) totalReviews.textContent = product.reviews
+  if (averageRating) averageRating.textContent = product.rating.toFixed(1)
+  if (averageRatingStars) averageRatingStars.innerHTML = generateStars(product.rating)
+
+  // Generate sample reviews
+  const reviewsList = document.getElementById("reviewsList")
+  if (reviewsList) {
+    const sampleReviews = generateSampleReviews(product)
+    reviewsList.innerHTML = sampleReviews
+  }
+
+  // Rating breakdown
+  const ratingBreakdown = document.getElementById("ratingBreakdown")
+  if (ratingBreakdown) {
+    ratingBreakdown.innerHTML = generateRatingBreakdown(product)
+  }
+}
+
+function generateSampleReviews(product) {
+  const reviews = [
+    {
+      name: "Ahmad Rizki",
+      rating: 5,
+      date: "2 hari yang lalu",
+      comment: `${product.name} sangat berkualitas! Sesuai dengan deskripsi dan pengiriman cepat. Sangat puas dengan pembelian ini.`,
+      helpful: 12,
+    },
+    {
+      name: "Sari Dewi",
+      rating: 4,
+      date: "1 minggu yang lalu",
+      comment: `Produk bagus dengan kualitas yang baik. Harga sebanding dengan kualitas yang didapat. Recommended!`,
+      helpful: 8,
+    },
+    {
+      name: "Budi Santoso",
+      rating: 5,
+      date: "2 minggu yang lalu",
+      comment: `Pelayanan excellent dan produk sesuai ekspektasi. Packaging juga rapi dan aman. Terima kasih!`,
+      helpful: 15,
+    },
+  ]
+
+  return reviews
+    .map(
+      (review) => `
+    <div class="border-b border-gray-200 pb-6">
+      <div class="flex items-start space-x-4">
+        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+          <span class="text-blue-600 font-medium">${review.name.charAt(0)}</span>
+        </div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h4 class="font-medium">${review.name}</h4>
+              <div class="flex text-yellow-400">
+                ${generateStars(review.rating)}
+              </div>
+            </div>
+            <span class="text-sm text-gray-500">${review.date}</span>
+          </div>
+          <p class="text-gray-600 mb-2">${review.comment}</p>
+          <div class="flex items-center space-x-4 text-sm text-gray-500">
+            <button class="hover:text-blue-600">👍 Membantu (${review.helpful})</button>
+            <button class="hover:text-blue-600">Balas</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `,
+    )
+    .join("")
+}
+
+function generateRatingBreakdown(product) {
+  // Generate realistic rating distribution
+  const total = product.reviews
+  const breakdown = {
+    5: Math.floor(total * 0.6),
+    4: Math.floor(total * 0.25),
+    3: Math.floor(total * 0.1),
+    2: Math.floor(total * 0.03),
+    1: Math.floor(total * 0.02),
+  }
+
+  return `
+    <div class="space-y-2">
+      ${[5, 4, 3, 2, 1]
+        .map(
+          (stars) => `
+        <div class="flex items-center">
+          <span class="text-sm w-8">${stars}★</span>
+          <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+            <div class="bg-yellow-400 h-2 rounded-full" style="width: ${(breakdown[stars] / total) * 100}%"></div>
+          </div>
+          <span class="text-sm text-gray-600">${breakdown[stars]}</span>
+        </div>
+      `,
+        )
+        .join("")}
+    </div>
+  `
+}
+
+function setupAddToCartButton(product) {
+  const addToCartBtn = document.getElementById("addToCartBtn")
+  const buyNowBtn = document.getElementById("buyNowBtn")
+
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener("click", () => {
+      const quantity = Number.parseInt(document.getElementById("quantity").textContent) || 1
+      addToCart(product.id, quantity)
+    })
+  }
+
+  if (buyNowBtn) {
+    buyNowBtn.addEventListener("click", () => {
+      const quantity = Number.parseInt(document.getElementById("quantity").textContent) || 1
+      addToCart(product.id, quantity)
+      window.location.href = "cart.html"
+    })
+  }
+}
+
+function loadRelatedProducts(product) {
+  const relatedContainer = document.getElementById("relatedProducts")
+  if (!relatedContainer) return
+
+  // Get products from same category, excluding current product
+  const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4)
+
+  // If not enough products in same category, fill with other products
+  if (relatedProducts.length < 4) {
+    const otherProducts = products
+      .filter((p) => p.id !== product.id && !relatedProducts.includes(p))
+      .slice(0, 4 - relatedProducts.length)
+    relatedProducts.push(...otherProducts)
+  }
+
+  relatedContainer.innerHTML = relatedProducts
+    .map(
+      (relatedProduct) => `
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden group hover:shadow-lg transition-shadow">
+      <a href="product-detail.html?id=${relatedProduct.id}" class="block">
+        <div class="relative pb-[100%]">
+          <img src="${relatedProduct.image}" alt="${relatedProduct.name}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform">
+          ${relatedProduct.discount > 0 ? `<span class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">-${relatedProduct.discount}%</span>` : ""}
+        </div>
+        <div class="p-4">
+          <h3 class="font-medium text-gray-800 mb-1 line-clamp-2">${relatedProduct.name}</h3>
+          <div class="flex items-center mb-1">
+            <div class="flex text-yellow-400 text-sm">
+              ${generateStars(relatedProduct.rating)}
+            </div>
+            <span class="text-xs text-gray-500 ml-1">(${relatedProduct.reviews})</span>
+          </div>
+          <div class="font-bold text-blue-600">Rp ${formatPrice(relatedProduct.price)}</div>
+        </div>
+      </a>
+    </div>
+  `,
+    )
+    .join("")
+}
 
 // Setup Cart Page
 function setupCartPage() {
@@ -725,201 +1231,6 @@ function applyFilters() {
     if (productCount && productCount.textContent.includes("Katalog Produk")) {
       productCount.textContent = `Katalog Produk (${filteredProducts.length} produk)`
     }
-  }
-}
-
-// Setup Product Detail Page
-function setupProductDetailPage() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const productId = parseInt(urlParams.get("id"));
-
-  if (productId) {
-    loadProductDetail(productId);
-  } else {
-    window.location.href = "products.html";
-  }
-}
-
-function loadProductDetail(productId) {
-  const product = products.find(p => p.id === productId);
-  
-  if (!product) {
-    console.error("Product not found with ID:", productId);
-    window.location.href = "products.html";
-    return;
-  }
-
-  // Update page metadata
-  document.title = `${product.name} - Toko Serba Ada`;
-
-  // Update breadcrumb
-  updateBreadcrumb(product);
-
-  // Update product images
-  updateProductImages(product);
-
-  // Update product info
-  updateProductInfo(product);
-
-  // Update tabs content
-  updateProductTabs(product);
-
-  // Setup add to cart button
-  setupAddToCartButton(product);
-}
-
-function updateBreadcrumb(product) {
-  const breadcrumb = document.querySelector(".breadcrumb span:last-child");
-  if (breadcrumb) {
-    breadcrumb.textContent = product.name;
-  }
-}
-
-function updateProductImages(product) {
-  // Main image
-  const mainImage = document.getElementById("mainImage");
-  if (mainImage) {
-    mainImage.src = product.image;
-    mainImage.alt = product.name;
-  }
-
-  // Thumbnails
-  const thumbnails = document.querySelectorAll(".thumbnail");
-  thumbnails.forEach(thumb => {
-    thumb.src = product.image;
-    thumb.alt = product.name;
-  });
-
-  // Discount badge
-  const discountBadge = document.querySelector(".discount-badge");
-  if (discountBadge) {
-    if (product.discount > 0) {
-      discountBadge.textContent = `-${product.discount}%`;
-      discountBadge.style.display = "block";
-    } else {
-      discountBadge.style.display = "none";
-    }
-  }
-}
-
-function updateProductInfo(product) {
-  // Product name
-  const productName = document.querySelector(".product-name");
-  if (productName) productName.textContent = product.name;
-
-  // Rating
-  const ratingContainer = document.querySelector(".product-rating");
-  if (ratingContainer) {
-    ratingContainer.innerHTML = generateStars(product.rating);
-    const reviewsCount = ratingContainer.querySelector(".reviews-count");
-    if (reviewsCount) reviewsCount.textContent = `(${product.reviews})`;
-  }
-
-  // Price
-  const currentPrice = document.querySelector(".current-price");
-  const originalPrice = document.querySelector(".original-price");
-  
-  if (currentPrice) {
-    currentPrice.textContent = `Rp ${formatPrice(product.price)}`;
-  }
-  
-  if (originalPrice) {
-    if (product.originalPrice) {
-      originalPrice.textContent = `Rp ${formatPrice(product.originalPrice)}`;
-      originalPrice.style.display = "block";
-    } else {
-      originalPrice.style.display = "none";
-    }
-  }
-
-  // Stock
-  const stockElement = document.querySelector(".stock-status");
-  if (stockElement) {
-    stockElement.textContent = product.stock > 0 ? "✓ Stok tersedia" : "Stok habis";
-    stockElement.className = product.stock > 0 ? "stock-status text-green-600" : "stock-status text-red-600";
-  }
-
-  // Features
-  const featuresContainer = document.querySelector(".product-features");
-  if (featuresContainer && product.features) {
-    featuresContainer.innerHTML = product.features.map(feature => 
-      `<li class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        ${feature}
-      </li>`
-    ).join("");
-  }
-}
-
-function updateProductTabs(product) {
-  // Description tab
-  const descriptionTab = document.getElementById("description-tab");
-  if (descriptionTab) {
-    const descriptionContent = descriptionTab.querySelector(".description-content");
-    if (descriptionContent) {
-      descriptionContent.innerHTML = `
-        <p class="mb-4">${product.description}</p>
-        <h4 class="font-semibold mb-2">Fitur Utama:</h4>
-        <ul class="list-disc pl-5 space-y-1">
-          ${product.features.map(feat => `<li>${feat}</li>`).join("")}
-        </ul>
-      `;
-    }
-  }
-
-  // Specifications tab
-  const specsTab = document.getElementById("specifications-tab");
-  if (specsTab) {
-    // Update specs based on product category
-    let specsHTML = "";
-    
-    if (product.category === "elektronik") {
-      specsHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 class="font-semibold mb-3">Umum</h4>
-            <dl class="space-y-2">
-              <div class="flex justify-between">
-                <dt class="text-gray-600">Merek</dt>
-                <dd class="font-medium">${product.name.split(" ")[0]}</dd>
-              </div>
-              <div class="flex justify-between">
-                <dt class="text-gray-600">Model</dt>
-                <dd class="font-medium">${product.name.split(" ").slice(1).join(" ")}</dd>
-              </div>
-            </dl>
-          </div>
-          <div>
-            <h4 class="font-semibold mb-3">Spesifikasi</h4>
-            <dl class="space-y-2">
-              ${product.features.map(feat => `
-                <div class="flex justify-between">
-                  <dt class="text-gray-600">${feat.split(":")[0] || feat}</dt>
-                  <dd class="font-medium">${feat.split(":")[1] || "-"}</dd>
-                </div>
-              `).join("")}
-            </dl>
-          </div>
-        </div>
-      `;
-    }
-    
-    specsTab.innerHTML = specsHTML;
-  }
-}
-
-function setupAddToCartButton(product) {
-  const addToCartBtn = document.querySelector(".add-to-cart-btn");
-  if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", () => {
-      const quantity = parseInt(document.getElementById("quantity").textContent) || 1;
-      addToCart(product.id, quantity);
-      
-      // Show success notification
-      showNotification(`${product.name} ditambahkan ke keranjang!`);
-    });
   }
 }
 
